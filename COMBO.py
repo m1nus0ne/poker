@@ -6,7 +6,7 @@ def print_card(arr):
          'Дама', 'Король', 'Туз']
     b = ['Черви', 'Буби', 'Черви', 'Крести']
     print(a[arr[0]], b[arr[1]])
-    return
+
 
 
 NUMBER_OF_PLAYER = 4
@@ -19,100 +19,73 @@ shuffle(stuck)  # перемешивание колоды
 scores = [0 for i in range(NUMBER_OF_PLAYER)]
 
 
-def hight_card(c_list: list):
-    """старшая карта 100+x"""
+def high_card(c_list: list):
+    """старшая карта"""
     return max(c_list[0][0], c_list[1][0]) + 100
 
 
-# паралельно провдим его и для карт на столе, чтобы убрать лишние комбинации
-
+# noinspection PyUnresolvedReferences
 def same(c_list: list):
-    '''пара,тройка,сет алгоритм 2.0(28)'''
-    c_list:list = [i[0] for i in c_list].sort(reverse=True)
-    c_list = [[key] * c_list.count(key) for key in set(c_list)]
-    c_list.sort(key=lambda i: len(i), reverse=True)
+    """пара,тройка,сет, флэш"""
+    suits = [i[1] for i in c_list]
+    suits = [[key] * suits.count(key) for key in set(suits)]
+    c_list = [i[0] for i in c_list]
+    c_list = [[key] * c_list.count(key) for key in set(c_list)].sort(key=len)
+    c_list.sort(key=len)
 
-
-    # ветка ифов для определения комбо (другого сбособа не придумал)
+    # ветка ифов для определения комбо (другого способа не придумал)
 
     if len(c_list[0]) == 4:
-        end = c_list[0][0] + 800  # Каре(800)
+        points = c_list[0][0] + 800  # Каре(800)
     elif len(c_list[0]) == 3 and len(c_list[1]) == 2:
-        end = c_list[0][0] * 1.3 + c_list[1][0] + 700  # фуллхаус(700)
+        points = c_list[0][0] * 1.3 + c_list[1][0] + 700  # фуллхаус(700)
     elif len(c_list[0]) == 3:
-        end = c_list[0][0] + 400  # трипс(400)
+        points = c_list[0][0] + 400  # трипс(400)
+    elif len(suits[0]) >= 5:
+        points = max(filter(lambda x: x[1] == 2, c_list))[0] + 600 #флеш(600)
     elif len(c_list[0]) == 2 and len(c_list[1]) == 2:
-        end = c_list[0][0] * 1.3 + c_list[1][0] + 300  # 2 пары или +170р(300)
+        points = c_list[0][0] * 1.3 + c_list[1][0] + 300  # 2 пары(300)
     elif len(c_list[0]) == 2 and len(c_list[1]) == 1:
-        end = c_list[0][0] + 200  # (шм)пара (200)
+        points = c_list[0][0] + 200  # пара (200)
     else:
-        end = 0
-    # сука андрей ты мне до сих пор 90р торчишь
-    return end
+        points = 0
+
+    return points
 
 
 def in_row(c_list: list):
-    '''стрит стритфлеш, флеш и роял флеш(нет блять,клеш рояль)'''
+    """стрит стритфлеш, флеш и роял флеш(нет блять,клеш рояль)"""
 
-    c_list.sort(key=lambda a: a[0], reverse=True)
+    c_list.sort(reverse=True)
+    pre = [c_list[0]]
 
-    if count == 5:
-        if list[0][0] == 12 and list[-1][0] == 0:
-            pre.append(list[0][0])
+    for i in range(len(c_list)):
+        i = (i + 1) % len(c_list)
+        if pre[-1][0] == c_list[i][0]:
+            pre[-1].append(c_list[i][1])
+        elif (pre[-1][0] == c_list[i][0] + 1) or (pre[-1][0] == c_list[i][0] - 12):
+            pre.append(c_list[i])
+        elif len(pre) < 5:
+            pre = [c_list[i]]
 
-        suit = pre[0][1]
-        stritflash = True
-        for i in pre:
-            if i[1] != suit:
-                stritflash = False
+    points = 0
+    if len(c_list) >= 5:
+        c_list = sorted(pre, key=lambda x: x[0] == 12)
 
-        if stritflash and pre[0][0] == 12:
-            end = 1000  # как получишь, позвони
-        elif stritflash:
-            end = pre[0][0] + 900
+        siuts = [i[1::] for i in pre]
+        pre = [{*siuts[0]}]
+        start = 0
+        for i in range(1, len(siuts)):
+            inresection = set(pre[-1]) & set(siuts[i])
+            if inresection != set():
+                pre.append(inresection)
+            elif len(pre) < 5:
+                pre = [{siuts[i]}]
+                start = i
+        if len(siuts) >= 5:
+            points = c_list[start][0] + 900  # Стрит флеш(900)
+            if c_list[start][0] == 8 and c_list[-1][0] == 12:  #роял флеш(1000)
+                points = 1000
         else:
-            end = pre[0][0] + 500
-
-
-def flesh(list: list):
-    '''Просто флеш'''
-    end = 0
-    list.sort(key=lambda i: i[1], reverse=True)
-    pre = []
-    count = 0
-    for i in range(1, len(list)):
-        if count == 4:
-            list.append(list[i])
-            break
-        elif list[i - 1][1] == list[i][1]:
-            count += 1
-            pre.append(list[i - 1])
-        else:
-
-            pre.clear()
-            count = 0
-    if count == 4:
-        end = 600 + pre[0][0]
-    return end
-
-
-combo = [hight_card, same, in_row, flesh]
-table = desk[-1]
-
-# print_array(desk[:-1])
-for hand in range(len(desk) - 1):  # применяем все функции ко всем рукам()
-    for func in combo:
-        if func != 'hight_card':  # хотел сделать через декоратры? А ебись оно в рот!
-            t = desk[hand].copy()
-            t.extend(table)
-            scores[hand] = func(t)
-        else:
-            t = desk[hand].copy()
-            scores[hand] = func(t)
-
-print(scores)
-
-# илья, ещё раз такую хуйню напишешь и все узнают что ты на бабанова по ночам дрочишь
-# ветка шпака
-
-# TODO: Нужно ли дать Шпаку по жопе?
+            points = c_list[start][0] + 500  # Стрит(500)
+    return points
