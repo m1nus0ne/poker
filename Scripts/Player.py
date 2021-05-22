@@ -1,4 +1,4 @@
-from Card import Card
+from Scripts.Card.Card import Card
 class Player(object):
     def __init__(self, head: tuple, name: str):
         self.head = head

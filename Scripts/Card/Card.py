@@ -4,3 +4,5 @@ class Card(object):
         self.value = value
     def getDesk(self):
         pass
+    def __str__(self):
+        suits = ['Пики',]

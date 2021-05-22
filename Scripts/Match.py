@@ -10,4 +10,8 @@ class Match(object):
         self.deck = deck
 
     def startMatch(self):
+        pass
 
+    def distribution(self):
+        for player in self.players:
+            player.addCard()

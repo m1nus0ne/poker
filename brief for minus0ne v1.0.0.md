@@ -1,4 +1,4 @@
-# TT for m1nus0ne v1.0.1
+# brief for m1nus0ne v1.0.1
 
 ## *class Room*
 
