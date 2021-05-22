@@ -1,30 +1,8 @@
-from random import shuffle
-
-
-def print_card(arr):
-    a = ['Двойка', 'Тройка', 'Четверка', 'Пятерка', 'Шестерка', 'Семерка', 'Восьмерка', 'Девятка', 'Десятка', 'Валет',
-         'Дама', 'Король', 'Туз']
-    b = ['Черви', 'Буби', 'Черви', 'Крести']
-    print(a[arr[0]], b[arr[1]])
-
-
-
-NUMBER_OF_PLAYER = 4
-
-# генерация колоды (1 число номинал, второе масть)
-stuck = [[i // 4, i % 4] for i in range(52)]
-shuffle(stuck)  # перемешивание колоды
-
-# каждая комбинация дает некое количество очков
-scores = [0 for i in range(NUMBER_OF_PLAYER)]
-
-
 def high_card(c_list: list):
     """старшая карта"""
     return max(c_list[0][0], c_list[1][0]) + 100
 
 
-# noinspection PyUnresolvedReferences
 def same(c_list: list):
     """пара,тройка,сет, флэш"""
     suits = [i[1] for i in c_list]
@@ -42,7 +20,7 @@ def same(c_list: list):
     elif len(c_list[0]) == 3:
         points = c_list[0][0] + 400  # трипс(400)
     elif len(suits[0]) >= 5:
-        points = max(filter(lambda x: x[1] == 2, c_list))[0] + 600 #флеш(600)
+        points = max(filter(lambda x: x[1] == 2, c_list))[0] + 600  # флеш(600)
     elif len(c_list[0]) == 2 and len(c_list[1]) == 2:
         points = c_list[0][0] * 1.3 + c_list[1][0] + 300  # 2 пары(300)
     elif len(c_list[0]) == 2 and len(c_list[1]) == 1:
@@ -84,7 +62,7 @@ def in_row(c_list: list):
                 start = i
         if len(siuts) >= 5:
             points = c_list[start][0] + 900  # Стрит флеш(900)
-            if c_list[start][0] == 8 and c_list[-1][0] == 12:  #роял флеш(1000)
+            if c_list[start][0] == 8 and c_list[-1][0] == 12:  # роял флеш(1000)
                 points = 1000
         else:
             points = c_list[start][0] + 500  # Стрит(500)
