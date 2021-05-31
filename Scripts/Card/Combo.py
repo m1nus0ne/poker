@@ -32,7 +32,7 @@ def same(c_list: list):
 
 
 def in_row(c_list: list):
-    """стрит стритфлеш, флеш и роял флеш(нет блять,клеш рояль)"""
+    """стрит стритфлеш, флеш и роял флеш"""
 
     c_list.sort(reverse=True)
     pre = [c_list[0]]
