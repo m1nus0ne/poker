@@ -1,8 +1,8 @@
 from Scripts.Card.Card import Card
 class Player(object):
-    def __init__(self, head: tuple, name: str):
-        self.head = head
+    def __init__(self, hand: list, name: str):
+        self.hand = hand
         self.name = name
     def addCard(self,card: Card):
-        pass
+        self.hand += card
         

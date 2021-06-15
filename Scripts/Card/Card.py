@@ -1,13 +1,13 @@
 from enum import IntEnum, Enum
-from Scripts.config import intToSuit,intToValue
 class Card(object):
-    def __init__(self,suit: IntEnum, value: IntEnum):
+    def __init__(self,suit: Enum, value: Enum):
+
         self.suit = suit
         self.value = value
     def __str__(self):
-       return f'{} of {}'.format(intToValue[self.value],intToSuit[self.suit])
+       return '{} of {}'.format(self.value.name,self.suit.name)
 
-class Value(IntEnum):
+class Value(Enum):
     two = 0
     three = 1
     four = 2
@@ -22,7 +22,7 @@ class Value(IntEnum):
     king = 11
     ace = 12
 
-class Suit(IntEnum):
+class Suit(Enum):
     spades = 0
     clubs = 1
     diamonds = 2
